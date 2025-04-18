@@ -1,36 +1,21 @@
 package services
 
 import (
+	"cyberus/client-partner/internal/models"
 	"log"
 	"time"
 
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-// Struct to map the expected JSON fields
-// type WapRedirectRequest struct {
-// 	IdPartner    string `json:"id_partner"`
-// 	RefIdPartner string `json:"refid_partner"`
-// 	MediaPartner string `json:"media_partner"`
-// 	NamePartner  string `json:"name_partner"`
-// }
-
 // Request
 type ClientUpdateDataReq struct {
-	ReqUsername string `json:"username"`
-	ReqPassword string `json:"password"`
-}
-
-// Table name on database
-type ClientPartner struct {
-	ID       string `gorm:"primaryKey"`
-	Username string `gorm:"column:username"`
-	Password string `gorm:"column:password"`
+	ReqClientID    string `json:"id"`
+	ReqNewPassword string `json:"new_password"`
 }
 
 func UpdateClientService(r *http.Request) map[string]string {
@@ -72,7 +57,7 @@ func UpdateClientService(r *http.Request) map[string]string {
 		return res
 	}
 	// // Unmarshal JSON into struct
-	var clientRequest ClientPartnerDataRequest
+	var clientRequest ClientUpdateDataReq
 	err = json.Unmarshal(jsonData, &clientRequest)
 	if err != nil {
 		//fmt.Println("Error map Json to Struct :" + err.Error())
@@ -84,14 +69,26 @@ func UpdateClientService(r *http.Request) map[string]string {
 		return res
 	}
 
-	clientPartnerInsert := ClientPartner{
-		ID:       generateShortMD5ID(),
-		Username: clientRequest.ReqUsername,
-		Password: clientRequest.ReqPassword,
+	clientPartnerModel := models.ClientPartner{
+		ID:       clientRequest.ReqClientID,
+		Password: clientRequest.ReqNewPassword,
 	}
 
-	if errInsertDB := db.Create(&clientPartnerInsert).Error; errInsertDB != nil {
-		fmt.Println("ERROR INSERT : " + errInsertDB.Error())
+	//fmt.Println(clientRequest.ReqClientID)
+	//fmt.Println(clientRequest.ReqNewPassword)
+
+	// select * from where
+	if err := db.First(&clientPartnerModel, "id = ?", clientRequest.ReqClientID).Error; err != nil {
+		res := map[string]string{
+			"code":    "-1",
+			"message": "client not found",
+		}
+		return res
+	}
+
+	//clientPartnerModel.Password = clientRequest.ReqNewPassword
+	if err := db.Model(&clientPartnerModel).Update("password", clientRequest.ReqNewPassword).Error; err != nil {
+
 		res := map[string]string{
 			"code":    "-1",
 			"message": "failures",

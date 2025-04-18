@@ -9,6 +9,7 @@ import (
 func SetupRoutes() {
 	// Register routes using http.HandleFunc
 	http.HandleFunc("/client-api/add", controllers.AddClientController)
+	http.HandleFunc("/client-api/update", controllers.UpdateClientController)
 	http.HandleFunc("/api/", HomeHandler)
 }
 
