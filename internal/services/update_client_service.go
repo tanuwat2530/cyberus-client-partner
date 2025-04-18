@@ -1,16 +1,12 @@
 package services
 
 import (
-	"crypto/md5"
 	"log"
 	"time"
 
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"cyberus/client-partner/internal/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -25,19 +21,19 @@ import (
 // }
 
 // Request
-type ClientPartnerDataRequest struct {
+type ClientUpdateDataReq struct {
 	ReqUsername string `json:"username"`
 	ReqPassword string `json:"password"`
 }
 
-// Generate ID: first 8 chars of MD5(timestamp)
-func generateShortMD5ID() string {
-	timestamp := fmt.Sprintf("%d", time.Now().UnixNano())
-	hash := md5.Sum([]byte(timestamp))
-	return hex.EncodeToString(hash[:])[:8]
+// Table name on database
+type ClientPartner struct {
+	ID       string `gorm:"primaryKey"`
+	Username string `gorm:"column:username"`
+	Password string `gorm:"column:password"`
 }
 
-func AddClientService(r *http.Request) map[string]string {
+func UpdateClientService(r *http.Request) map[string]string {
 
 	// config database pool
 	dsn := "host=localhost user=root password=11111111 dbname=cyberus_db port=5432 sslmode=disable TimeZone=Asia/Bangkok search_path=root@cyberus"
@@ -87,9 +83,9 @@ func AddClientService(r *http.Request) map[string]string {
 		}
 		return res
 	}
-	partnerID := generateShortMD5ID()
-	clientPartnerInsert := models.ClientPartner{
-		ID:       partnerID,
+
+	clientPartnerInsert := ClientPartner{
+		ID:       generateShortMD5ID(),
 		Username: clientRequest.ReqUsername,
 		Password: clientRequest.ReqPassword,
 	}
