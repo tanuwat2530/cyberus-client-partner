@@ -1,15 +1,12 @@
 package services
 
 import (
+	"CyberusGolangShareLibrary/postgresql_db"
 	"cyberus/client-partner/internal/models"
-	"log"
-	"time"
+	"fmt"
 
 	"encoding/json"
 	"net/http"
-
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 // Request
@@ -29,21 +26,6 @@ type ServiceUpdateDataReq struct {
 }
 
 func UpdateServiceService(r *http.Request) map[string]string {
-
-	// config database pool
-	dsn := "host=localhost user=root password=11111111 dbname=cyberus_db port=5432 sslmode=disable TimeZone=Asia/Bangkok search_path=root@cyberus"
-	db, errDatabase := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if errDatabase != nil {
-		log.Fatal("Failed to connect to database:", errDatabase)
-	}
-	sqlDB, err := db.DB()
-	if err != nil {
-		log.Fatal("Failed to get generic database object:", err)
-	}
-	// Set connection pool settings
-	sqlDB.SetMaxOpenConns(5)                    // Maximum number of open connections
-	sqlDB.SetMaxIdleConns(1)                    // Maximum number of idle connections
-	sqlDB.SetConnMaxLifetime(180 * time.Second) // Connection max lifetime
 
 	var payload map[string]interface{}
 	errPayload := json.NewDecoder(r.Body).Decode(&payload)
@@ -96,8 +78,19 @@ func UpdateServiceService(r *http.Request) map[string]string {
 	//fmt.Println(clientRequest.ReqClientID)
 	//fmt.Println(clientRequest.ReqNewPassword)
 
+	dns := "host=localhost user=root password=11111111 dbname=cyberus_db port=5432 sslmode=disable TimeZone=Asia/Bangkok search_path=root@cyberus"
+	// Init database
+	postgresDB, sqlConfig, err := postgresql_db.PostgreSqlInstance(dns)
+	if err != nil {
+		panic(err)
+	}
+	// Test connection
+	err = sqlConfig.Ping()
+	if err != nil {
+		fmt.Println(err)
+	}
 	// select * from where
-	if err := db.First(&clientServiceModel, "id = ?", serviceUpdateRequest.ID).Error; err != nil {
+	if err := postgresDB.First(&clientServiceModel, "id = ?", serviceUpdateRequest.ID).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",
 			"message": "client not found",
@@ -106,7 +99,7 @@ func UpdateServiceService(r *http.Request) map[string]string {
 	}
 
 	//Update field
-	if err := db.Model(&clientServiceModel).Update("keyword", serviceUpdateRequest.Keyword).Error; err != nil {
+	if err := postgresDB.Model(&clientServiceModel).Update("keyword", serviceUpdateRequest.Keyword).Error; err != nil {
 		//if err := db.Save(&clientServiceModel).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",
@@ -115,7 +108,7 @@ func UpdateServiceService(r *http.Request) map[string]string {
 		return res
 	}
 
-	if err := db.Model(&clientServiceModel).Update("shortcode", serviceUpdateRequest.Shortcode).Error; err != nil {
+	if err := postgresDB.Model(&clientServiceModel).Update("shortcode", serviceUpdateRequest.Shortcode).Error; err != nil {
 		//if err := db.Save(&clientServiceModel).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",
@@ -124,7 +117,7 @@ func UpdateServiceService(r *http.Request) map[string]string {
 		return res
 	}
 
-	if err := db.Model(&clientServiceModel).Update("telcoid", serviceUpdateRequest.TelcoID).Error; err != nil {
+	if err := postgresDB.Model(&clientServiceModel).Update("telcoid", serviceUpdateRequest.TelcoID).Error; err != nil {
 		//if err := db.Save(&clientServiceModel).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",
@@ -133,7 +126,7 @@ func UpdateServiceService(r *http.Request) map[string]string {
 		return res
 	}
 
-	if err := db.Model(&clientServiceModel).Update("ads_id", serviceUpdateRequest.AdsID).Error; err != nil {
+	if err := postgresDB.Model(&clientServiceModel).Update("ads_id", serviceUpdateRequest.AdsID).Error; err != nil {
 		//if err := db.Save(&clientServiceModel).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",
@@ -142,7 +135,7 @@ func UpdateServiceService(r *http.Request) map[string]string {
 		return res
 	}
 
-	if err := db.Model(&clientServiceModel).Update("wap_aoc_refid", serviceUpdateRequest.WapAocRefID).Error; err != nil {
+	if err := postgresDB.Model(&clientServiceModel).Update("wap_aoc_refid", serviceUpdateRequest.WapAocRefID).Error; err != nil {
 		//if err := db.Save(&clientServiceModel).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",
@@ -151,7 +144,7 @@ func UpdateServiceService(r *http.Request) map[string]string {
 		return res
 	}
 
-	if err := db.Model(&clientServiceModel).Update("wap_aoc_id", serviceUpdateRequest.WapAocID).Error; err != nil {
+	if err := postgresDB.Model(&clientServiceModel).Update("wap_aoc_id", serviceUpdateRequest.WapAocID).Error; err != nil {
 		//if err := db.Save(&clientServiceModel).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",
@@ -160,7 +153,7 @@ func UpdateServiceService(r *http.Request) map[string]string {
 		return res
 	}
 
-	if err := db.Model(&clientServiceModel).Update("wap_aoc_media", serviceUpdateRequest.WapAocMedia).Error; err != nil {
+	if err := postgresDB.Model(&clientServiceModel).Update("wap_aoc_media", serviceUpdateRequest.WapAocMedia).Error; err != nil {
 		//if err := db.Save(&clientServiceModel).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",
@@ -169,7 +162,7 @@ func UpdateServiceService(r *http.Request) map[string]string {
 		return res
 	}
 
-	if err := db.Model(&clientServiceModel).Update("postback_url", serviceUpdateRequest.PostbackURL).Error; err != nil {
+	if err := postgresDB.Model(&clientServiceModel).Update("postback_url", serviceUpdateRequest.PostbackURL).Error; err != nil {
 		//if err := db.Save(&clientServiceModel).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",
@@ -178,7 +171,7 @@ func UpdateServiceService(r *http.Request) map[string]string {
 		return res
 	}
 
-	if err := db.Model(&clientServiceModel).Update("dn_url", serviceUpdateRequest.DNURL).Error; err != nil {
+	if err := postgresDB.Model(&clientServiceModel).Update("dn_url", serviceUpdateRequest.DNURL).Error; err != nil {
 		//if err := db.Save(&clientServiceModel).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",
@@ -187,7 +180,7 @@ func UpdateServiceService(r *http.Request) map[string]string {
 		return res
 	}
 
-	if err := db.Model(&clientServiceModel).Update("postback_counter", serviceUpdateRequest.PostbackCounter).Error; err != nil {
+	if err := postgresDB.Model(&clientServiceModel).Update("postback_counter", serviceUpdateRequest.PostbackCounter).Error; err != nil {
 		//if err := db.Save(&clientServiceModel).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",
@@ -196,7 +189,7 @@ func UpdateServiceService(r *http.Request) map[string]string {
 		return res
 	}
 
-	if err := db.Model(&clientServiceModel).Update("client_partner_id", serviceUpdateRequest.ClientPartnerID).Error; err != nil {
+	if err := postgresDB.Model(&clientServiceModel).Update("client_partner_id", serviceUpdateRequest.ClientPartnerID).Error; err != nil {
 		//if err := db.Save(&clientServiceModel).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",

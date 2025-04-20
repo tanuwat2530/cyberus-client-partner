@@ -1,8 +1,8 @@
 package services
 
 import (
+	"CyberusGolangShareLibrary/postgresql_db"
 	"crypto/md5"
-	"log"
 	"time"
 
 	"encoding/hex"
@@ -11,9 +11,6 @@ import (
 	"net/http"
 
 	"cyberus/client-partner/internal/models"
-
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 // Struct to map the expected JSON fields
@@ -40,19 +37,19 @@ func generateShortMD5ID() string {
 func AddClientService(r *http.Request) map[string]string {
 
 	// config database pool
-	dsn := "host=localhost user=root password=11111111 dbname=cyberus_db port=5432 sslmode=disable TimeZone=Asia/Bangkok search_path=root@cyberus"
-	db, errDatabase := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if errDatabase != nil {
-		log.Fatal("Failed to connect to database:", errDatabase)
-	}
-	sqlDB, err := db.DB()
-	if err != nil {
-		log.Fatal("Failed to get generic database object:", err)
-	}
-	// Set connection pool settings
-	sqlDB.SetMaxOpenConns(5)                    // Maximum number of open connections
-	sqlDB.SetMaxIdleConns(1)                    // Maximum number of idle connections
-	sqlDB.SetConnMaxLifetime(180 * time.Second) // Connection max lifetime
+	// dsn := "host=localhost user=root password=11111111 dbname=cyberus_db port=5432 sslmode=disable TimeZone=Asia/Bangkok search_path=root@cyberus"
+	// db, errDatabase := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	// if errDatabase != nil {
+	// 	log.Fatal("Failed to connect to database:", errDatabase)
+	// }
+	// sqlDB, err := db.DB()
+	// if err != nil {
+	// 	log.Fatal("Failed to get generic database object:", err)
+	// }
+	// // Set connection pool settings
+	// sqlDB.SetMaxOpenConns(5)                    // Maximum number of open connections
+	// sqlDB.SetMaxIdleConns(1)                    // Maximum number of idle connections
+	// sqlDB.SetConnMaxLifetime(180 * time.Second) // Connection max lifetime
 
 	var payload map[string]interface{}
 	errPayload := json.NewDecoder(r.Body).Decode(&payload)
@@ -93,15 +90,42 @@ func AddClientService(r *http.Request) map[string]string {
 		Username: clientRequest.ReqUsername,
 		Password: clientRequest.ReqPassword,
 	}
+	fmt.Println(clientPartnerInsert.ID)
+	// Init database
+	dns := "host=localhost user=root password=11111111 dbname=cyberus_db port=5432 sslmode=disable TimeZone=Asia/Bangkok search_path=root@cyberus"
 
-	if errInsertDB := db.Create(&clientPartnerInsert).Error; errInsertDB != nil {
-		fmt.Println("ERROR INSERT : " + errInsertDB.Error())
+	postgresDB, sqlConfig, err := postgresql_db.PostgreSqlInstance(dns)
+	if err != nil {
+		panic(err)
+	}
+	// Test connection
+	err = sqlConfig.Ping()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Auto migrate (create table if not exists)
+	postgresDB.AutoMigrate(&models.ClientPartner{})
+
+	fmt.Println("✅ Connected to PostgreSQL with connection pool")
+	result := postgresDB.Create(&clientPartnerInsert)
+	if result.Error != nil {
+		fmt.Println("ERROR INSERT : ")
 		res := map[string]string{
 			"code":    "-1",
 			"message": "failures",
 		}
 		return res
 	}
+
+	// if errInsertDB := postgresDB.Create(&clientPartnerInsert).Error; errInsertDB != nil {
+	// 	fmt.Println("ERROR INSERT : " + errInsertDB.Error())
+	// 	res := map[string]string{
+	// 		"code":    "-1",
+	// 		"message": "failures",
+	// 	}
+	// 	return res
+	// }
 
 	res := map[string]string{
 		"code":    "200",
