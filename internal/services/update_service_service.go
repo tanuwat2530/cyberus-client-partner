@@ -105,9 +105,10 @@ func UpdateServiceService(r *http.Request) map[string]string {
 		return res
 	}
 
-	//clientPartnerModel.Password = clientRequest.ReqNewPassword
-	if err := db.Model(&clientServiceModel).Error; err != nil {
-
+	//Update all field
+	// Update all fields where id = someID
+	if err := db.Model(&clientServiceModel).Where("id = ?", serviceUpdateRequest.ID).Updates(clientServiceModel).Error; err != nil {
+		//if err := db.Save(&clientServiceModel).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",
 			"message": "failures",
