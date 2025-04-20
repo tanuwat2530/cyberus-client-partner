@@ -105,13 +105,102 @@ func UpdateServiceService(r *http.Request) map[string]string {
 		return res
 	}
 
-	//Update all field
-	// Update all fields where id = someID
-	if err := db.Model(&clientServiceModel).Where("id = ?", serviceUpdateRequest.ID).Updates(clientServiceModel).Error; err != nil {
+	//Update field
+	if err := db.Model(&clientServiceModel).Update("keyword", serviceUpdateRequest.Keyword).Error; err != nil {
 		//if err := db.Save(&clientServiceModel).Error; err != nil {
 		res := map[string]string{
 			"code":    "-1",
-			"message": "failures",
+			"message": "keyword failures",
+		}
+		return res
+	}
+
+	if err := db.Model(&clientServiceModel).Update("shortcode", serviceUpdateRequest.Shortcode).Error; err != nil {
+		//if err := db.Save(&clientServiceModel).Error; err != nil {
+		res := map[string]string{
+			"code":    "-1",
+			"message": "shortcode failures",
+		}
+		return res
+	}
+
+	if err := db.Model(&clientServiceModel).Update("telcoid", serviceUpdateRequest.TelcoID).Error; err != nil {
+		//if err := db.Save(&clientServiceModel).Error; err != nil {
+		res := map[string]string{
+			"code":    "-1",
+			"message": "telcoid failures",
+		}
+		return res
+	}
+
+	if err := db.Model(&clientServiceModel).Update("ads_id", serviceUpdateRequest.AdsID).Error; err != nil {
+		//if err := db.Save(&clientServiceModel).Error; err != nil {
+		res := map[string]string{
+			"code":    "-1",
+			"message": "ads_id failures",
+		}
+		return res
+	}
+
+	if err := db.Model(&clientServiceModel).Update("wap_aoc_refid", serviceUpdateRequest.WapAocRefID).Error; err != nil {
+		//if err := db.Save(&clientServiceModel).Error; err != nil {
+		res := map[string]string{
+			"code":    "-1",
+			"message": "wap_aoc_refid failures",
+		}
+		return res
+	}
+
+	if err := db.Model(&clientServiceModel).Update("wap_aoc_id", serviceUpdateRequest.WapAocID).Error; err != nil {
+		//if err := db.Save(&clientServiceModel).Error; err != nil {
+		res := map[string]string{
+			"code":    "-1",
+			"message": "wap_aoc_id failures",
+		}
+		return res
+	}
+
+	if err := db.Model(&clientServiceModel).Update("wap_aoc_media", serviceUpdateRequest.WapAocMedia).Error; err != nil {
+		//if err := db.Save(&clientServiceModel).Error; err != nil {
+		res := map[string]string{
+			"code":    "-1",
+			"message": "wap_aoc_media failures",
+		}
+		return res
+	}
+
+	if err := db.Model(&clientServiceModel).Update("postback_url", serviceUpdateRequest.PostbackURL).Error; err != nil {
+		//if err := db.Save(&clientServiceModel).Error; err != nil {
+		res := map[string]string{
+			"code":    "-1",
+			"message": "postback_url failures",
+		}
+		return res
+	}
+
+	if err := db.Model(&clientServiceModel).Update("dn_url", serviceUpdateRequest.DNURL).Error; err != nil {
+		//if err := db.Save(&clientServiceModel).Error; err != nil {
+		res := map[string]string{
+			"code":    "-1",
+			"message": "dn_url failures",
+		}
+		return res
+	}
+
+	if err := db.Model(&clientServiceModel).Update("postback_counter", serviceUpdateRequest.PostbackCounter).Error; err != nil {
+		//if err := db.Save(&clientServiceModel).Error; err != nil {
+		res := map[string]string{
+			"code":    "-1",
+			"message": "postback_counter failures",
+		}
+		return res
+	}
+
+	if err := db.Model(&clientServiceModel).Update("client_partner_id", serviceUpdateRequest.ClientPartnerID).Error; err != nil {
+		//if err := db.Save(&clientServiceModel).Error; err != nil {
+		res := map[string]string{
+			"code":    "-1",
+			"message": "client_partner_id failures",
 		}
 		return res
 	}
