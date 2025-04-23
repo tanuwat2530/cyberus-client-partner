@@ -25,7 +25,7 @@ type ServiceUpdateDataReq struct {
 	WapAocMedia     string `json:"wap_aoc_media"`
 	PostbackURL     string `json:"postback_url"`
 	DNURL           string `json:"dn_url"`
-	PostbackCounter *int   `json:"postback_counter"`
+	PostbackCounter int    `json:"postback_counter"`
 }
 
 func UpdateServiceService(r *http.Request) map[string]string {
