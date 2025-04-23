@@ -12,6 +12,6 @@ type ClientService struct {
 	WapAocMedia     string `gorm:"column:wap_aoc_media"`
 	PostbackURL     string `gorm:"column:postback_url"`
 	DNURL           string `gorm:"column:dn_url"`
-	PostbackCounter *int   `gorm:"column:postback_counter"` // Nullable integer
+	PostbackCounter int    `gorm:"column:postback_counter"` // Nullable integer
 
 }
