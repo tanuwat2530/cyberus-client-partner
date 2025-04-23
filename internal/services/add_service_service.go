@@ -2,9 +2,12 @@ package services
 
 import (
 	"CyberusGolangShareLibrary/postgresql_db"
+	"CyberusGolangShareLibrary/redis_db"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"time"
 
 	"cyberus/client-partner/internal/models"
 )
@@ -98,9 +101,32 @@ func AddServiceService(r *http.Request) map[string]string {
 		fmt.Println("ERROR INSERT : " + errInsertDB.Error())
 		res := map[string]string{
 			"code":    "-1",
-			"message": "failures",
+			"message": "insert failures",
 		}
 		return res
+	}
+
+	// Convert to JSON
+	cacheData, err := json.Marshal(serviceDataRequest)
+	if err != nil {
+		//http.Error(w, "Failed to convert to JSON", http.StatusInternalServerError)
+		res := map[string]string{
+			"code":    "-1",
+			"message": "cache failures",
+		}
+
+		return res
+	}
+
+	redis_db.ConnectRedis()
+	redis_key := "SERVICE:" + clientServiceInsert.ClientPartnerID + ":" + clientServiceInsert.AdsID
+
+	ttl := 240 * time.Hour // expires in 240 Hour
+
+	// Set key with TTL
+	if err := redis_db.SetWithTTL(redis_key, string(cacheData), ttl); err != nil {
+		//write to file if Redis problem or forward request to AIS
+		log.Fatalf("SetWithTTL error: %v", err)
 	}
 
 	res := map[string]string{

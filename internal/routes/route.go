@@ -18,5 +18,5 @@ func SetupRoutes() {
 // HomeHandler for root endpoint
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Welcome to client backend API power by GoLang ^_^"))
+	w.Write([]byte("Welcome to CYBERUS-CLIENT-PARTNER API power by GoLang ^_^"))
 }
