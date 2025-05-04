@@ -118,15 +118,6 @@ func AddClientService(r *http.Request) map[string]string {
 		return res
 	}
 
-	// if errInsertDB := postgresDB.Create(&clientPartnerInsert).Error; errInsertDB != nil {
-	// 	fmt.Println("ERROR INSERT : " + errInsertDB.Error())
-	// 	res := map[string]string{
-	// 		"code":    "-1",
-	// 		"message": "failures",
-	// 	}
-	// 	return res
-	// }
-
 	res := map[string]string{
 		"code":    "200",
 		"message": "success",

@@ -8,6 +8,7 @@ import (
 // SetupRoutes registers all application routes
 func SetupRoutes() {
 	// Register routes using http.HandleFunc
+	http.HandleFunc("/client-service-api/list-service", controllers.ListServiceController)
 	http.HandleFunc("/client-service-api/list-client", controllers.ListClientController)
 	http.HandleFunc("/client-service-api/add", controllers.AddServiceController)
 	http.HandleFunc("/client-service-api/update", controllers.UpdateServiceController)
