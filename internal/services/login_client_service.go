@@ -77,7 +77,7 @@ func LoginClientService(r *http.Request) map[string]string {
 	defer r.Body.Close()
 
 	redis_db.ConnectRedis()
-	redis_key := "SERVICE:" + loginRequest.Username + ":" + loginRequest.Session
+	redis_key := loginRequest.Username + ":" + loginRequest.Session
 
 	ttl := 1 * time.Hour // expires in 240 Hour
 
