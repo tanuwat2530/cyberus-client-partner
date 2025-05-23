@@ -3,6 +3,7 @@ package services
 import (
 	"CyberusGolangShareLibrary/postgresql_db"
 	"crypto/md5"
+	"os"
 	"time"
 
 	"encoding/hex"
@@ -35,7 +36,7 @@ func generateShortMD5ID() string {
 }
 
 func AddClientService(r *http.Request) map[string]string {
-
+	dbConnection := os.Getenv("BN_DB_URL")
 	// config database pool
 	// dsn := "host=localhost user=root password=11111111 dbname=cyberus_db port=5432 sslmode=disable TimeZone=Asia/Bangkok search_path=root@cyberus"
 	// db, errDatabase := gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -92,9 +93,8 @@ func AddClientService(r *http.Request) map[string]string {
 	}
 	fmt.Println(clientPartnerInsert.ID)
 	// Init database
-	dns := "host=localhost user=root password=11111111 dbname=cyberus_db port=5432 sslmode=disable TimeZone=Asia/Bangkok search_path=root@cyberus"
 
-	postgresDB, sqlConfig, err := postgresql_db.PostgreSqlInstance(dns)
+	postgresDB, sqlConfig, err := postgresql_db.PostgreSqlInstance(dbConnection)
 	if err != nil {
 		panic(err)
 	}

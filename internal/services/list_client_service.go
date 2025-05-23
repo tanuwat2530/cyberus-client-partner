@@ -2,6 +2,7 @@ package services
 
 import (
 	"CyberusGolangShareLibrary/postgresql_db"
+	"os"
 
 	"fmt"
 	"net/http"
@@ -12,11 +13,10 @@ import (
 // Struct to map the expected JSON fields
 
 func ListClientService(r *http.Request) []map[string]string {
-
+	dbConnection := os.Getenv("BN_DB_URL")
 	// Init database
-	dns := "host=localhost user=root password=11111111 dbname=cyberus_db port=5432 sslmode=disable TimeZone=Asia/Bangkok search_path=root@cyberus"
 
-	postgresDB, sqlConfig, err := postgresql_db.PostgreSqlInstance(dns)
+	postgresDB, sqlConfig, err := postgresql_db.PostgreSqlInstance(dbConnection)
 	if err != nil {
 		panic(err)
 	}

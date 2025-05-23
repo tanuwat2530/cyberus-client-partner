@@ -6,6 +6,7 @@ import (
 	"cyberus/client-partner/internal/models"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"encoding/json"
@@ -29,7 +30,8 @@ type ServiceUpdateDataReq struct {
 }
 
 func UpdateServiceService(r *http.Request) map[string]string {
-
+	redisConnection := os.Getenv("BN_REDIS_URL")
+	dbConnection := os.Getenv("BN_DB_URL")
 	var payload map[string]interface{}
 	errPayload := json.NewDecoder(r.Body).Decode(&payload)
 	if errPayload != nil {
@@ -93,9 +95,8 @@ func UpdateServiceService(r *http.Request) map[string]string {
 	//fmt.Println(clientRequest.ReqClientID)
 	//fmt.Println(clientRequest.ReqNewPassword)
 
-	dns := "host=localhost user=root password=11111111 dbname=cyberus_db port=5432 sslmode=disable TimeZone=Asia/Bangkok search_path=root@cyberus"
 	// Init database
-	postgresDB, sqlConfig, err := postgresql_db.PostgreSqlInstance(dns)
+	postgresDB, sqlConfig, err := postgresql_db.PostgreSqlInstance(dbConnection)
 	if err != nil {
 		panic(err)
 	}
@@ -213,7 +214,7 @@ func UpdateServiceService(r *http.Request) map[string]string {
 		return res
 	}
 
-	redis_db.ConnectRedis()
+	redis_db.ConnectRedis(redisConnection, "", 0)
 	redis_key := "SERVICE:" + clientServiceModel.ClientPartnerID + ":" + clientServiceModel.AdsID
 
 	ttl := 240 * time.Hour // expires in 240 Hour

@@ -4,6 +4,7 @@ import (
 	"CyberusGolangShareLibrary/postgresql_db"
 	"cyberus/client-partner/internal/models"
 	"fmt"
+	"os"
 
 	"encoding/json"
 	"net/http"
@@ -16,6 +17,8 @@ type ClientUpdateDataReq struct {
 }
 
 func UpdateClientService(r *http.Request) map[string]string {
+
+	dbConnection := os.Getenv("BN_DB_URL")
 	var payload map[string]interface{}
 	errPayload := json.NewDecoder(r.Body).Decode(&payload)
 	if errPayload != nil {
@@ -58,10 +61,8 @@ func UpdateClientService(r *http.Request) map[string]string {
 	//fmt.Println(clientRequest.ReqClientID)
 	//fmt.Println(clientRequest.ReqNewPassword)
 
-	dns := "host=localhost user=root password=11111111 dbname=cyberus_db port=5432 sslmode=disable TimeZone=Asia/Bangkok search_path=root@cyberus"
-
 	// Init database
-	postgresDB, sqlConfig, err := postgresql_db.PostgreSqlInstance(dns)
+	postgresDB, sqlConfig, err := postgresql_db.PostgreSqlInstance(dbConnection)
 	if err != nil {
 		panic(err)
 	}

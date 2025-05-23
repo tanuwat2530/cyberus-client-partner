@@ -5,6 +5,7 @@ import (
 	"CyberusGolangShareLibrary/redis_db"
 	"encoding/json"
 	"log"
+	"os"
 	"strconv"
 	"time"
 
@@ -22,6 +23,8 @@ type LoginRequest struct {
 }
 
 func LoginClientService(r *http.Request) map[string]string {
+	redisConnection := os.Getenv("BN_REDIS_URL")
+	dbConnection := os.Getenv("BN_DB_URL")
 	var payload map[string]interface{}
 	errPayload := json.NewDecoder(r.Body).Decode(&payload)
 	if errPayload != nil {
@@ -47,9 +50,8 @@ func LoginClientService(r *http.Request) map[string]string {
 	fmt.Println(loginRequest.Password)
 
 	// Init database
-	dns := "host=localhost user=root password=11111111 dbname=cyberus_db port=5432 sslmode=disable TimeZone=Asia/Bangkok search_path=root@cyberus"
 
-	postgresDB, sqlConfig, err := postgresql_db.PostgreSqlInstance(dns)
+	postgresDB, sqlConfig, err := postgresql_db.PostgreSqlInstance(dbConnection)
 	if err != nil {
 		panic(err)
 	}
@@ -76,7 +78,7 @@ func LoginClientService(r *http.Request) map[string]string {
 	}
 	defer r.Body.Close()
 
-	redis_db.ConnectRedis()
+	redis_db.ConnectRedis(redisConnection, "", 0)
 	redis_key := loginRequest.Username + ":" + loginRequest.Session
 
 	ttl := 1 * time.Hour // expires in 240 Hour

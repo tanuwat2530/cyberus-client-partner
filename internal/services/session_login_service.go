@@ -3,6 +3,7 @@ package services
 import (
 	"CyberusGolangShareLibrary/redis_db"
 	"encoding/json"
+	"os"
 
 	"fmt"
 	"net/http"
@@ -15,6 +16,7 @@ type SessionLoginRequest struct {
 }
 
 func SessionLoginService(r *http.Request) map[string]string {
+	redisConnection := os.Getenv("BN_REDIS_URL")
 	var payload map[string]interface{}
 	errPayload := json.NewDecoder(r.Body).Decode(&payload)
 	if errPayload != nil {
@@ -39,7 +41,7 @@ func SessionLoginService(r *http.Request) map[string]string {
 
 	defer r.Body.Close()
 
-	redis_db.ConnectRedis()
+	redis_db.ConnectRedis(redisConnection, "", 0)
 	session, err := redis_db.GetValue(sessionLoginRequest.Username + ":" + sessionLoginRequest.Session)
 	if err != nil {
 		res := map[string]string{
