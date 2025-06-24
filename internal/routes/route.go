@@ -9,11 +9,14 @@ import (
 func SetupRoutes() {
 	// Register routes using http.HandleFunc
 
+	//ADD , DELETE , UPDATE , SERVICE FOR PARTNER
 	http.HandleFunc("/client-service-api/list-service", controllers.ListServiceController)
 	http.HandleFunc("/client-service-api/list-client", controllers.ListClientController)
 	http.HandleFunc("/client-service-api/add", controllers.AddServiceController)
 	http.HandleFunc("/client-service-api/update", controllers.UpdateServiceController)
+	http.HandleFunc("/client-service-api/delete", controllers.DeleteServiceController)
 
+	//ADD , DELETE , UPDATE PARTNER
 	http.HandleFunc("/client-api/login", controllers.LoginClientController)
 	http.HandleFunc("/client-api/session", controllers.SessionLoginController)
 	http.HandleFunc("/client-api/add", controllers.AddClientController)
