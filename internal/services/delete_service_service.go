@@ -14,6 +14,7 @@ import (
 type ServiceDeleteDataReq struct {
 	ID              string `json:"id"`
 	ClientPartnerID string `json:"client_partner_id"`
+	Media           string `json:"media"`
 }
 
 func DeleteServiceService(r *http.Request) map[string]string {
@@ -60,16 +61,26 @@ func DeleteServiceService(r *http.Request) map[string]string {
 
 	if result.Error != nil {
 		fmt.Println(result.Error)
+		res := map[string]string{
+			"code":    "-1",
+			"message": result.Error.Error(),
+		}
+		return res
 	}
 
 	if result.RowsAffected == 0 {
 		fmt.Println("no matching record found to delete")
+		res := map[string]string{
+			"code":    "-2",
+			"message": "NOT FOUND",
+		}
+		return res
 	}
 
 	redis_db.ConnectRedis(redisConnection, "", 0)
 
 	// Set key with TTL
-	redis_db.DelValue("aaa")
+	redis_db.DelValue("SERVICE:" + serviceDeleteDataReq.ClientPartnerID + ":" + serviceDeleteDataReq.Media)
 
 	res := map[string]string{
 		"code":    "200",

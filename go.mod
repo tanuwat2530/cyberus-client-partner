@@ -4,7 +4,7 @@ go 1.22.2
 
 replace CyberusGolangShareLibrary => ../cyberus-common-library
 
-require CyberusGolangShareLibrary v1.2.0
+require CyberusGolangShareLibrary v1.2.1 //Add scan keys in Redis lib
 
 require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
