@@ -23,6 +23,9 @@ func SetupRoutes() {
 	http.HandleFunc("/client-api/add", controllers.AddClientController)
 	http.HandleFunc("/client-api/update", controllers.UpdateClientController)
 
+	//REPORT
+	http.HandleFunc("/client-report/chart", controllers.ClientReportChartController)
+
 	http.HandleFunc("/api/", HomeHandler)
 }
 
