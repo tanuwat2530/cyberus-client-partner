@@ -46,8 +46,8 @@ func LoginClientService(r *http.Request) map[string]string {
 		fmt.Println("Error marshalling JSON:", err.Error())
 
 	}
-	fmt.Println(loginRequest.Username)
-	fmt.Println(loginRequest.Password)
+	//fmt.Println(loginRequest.Username)
+	//fmt.Println(loginRequest.Password)
 
 	// Init database
 
