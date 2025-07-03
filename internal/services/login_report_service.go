@@ -16,13 +16,13 @@ import (
 )
 
 // Struct to map the expected JSON fields
-type LoginRequest struct {
+type LoginReportRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Session  string `json:"session"`
 }
 
-func LoginClientService(r *http.Request) map[string]string {
+func LoginReportService(r *http.Request) []map[string]string {
 	redisConnection := os.Getenv("BN_REDIS_URL")
 	dbConnection := os.Getenv("BN_DB_URL")
 	var payload map[string]interface{}
@@ -39,15 +39,15 @@ func LoginClientService(r *http.Request) map[string]string {
 	}
 
 	// // Unmarshal JSON into struct
-	var loginRequest LoginRequest
-	err = json.Unmarshal(jsonData, &loginRequest)
+	var loginReportRequest LoginReportRequest
+	err = json.Unmarshal(jsonData, &loginReportRequest)
 	if err != nil {
 		//fmt.Println("Error map Json to Struct :" + err.Error())
-		fmt.Println("Error marshalling JSON:", err.Error())
+		fmt.Println("Error marshalling JSON : #1", err.Error())
 
 	}
-	fmt.Println(loginRequest.Username)
-	fmt.Println(loginRequest.Password)
+	//fmt.Println(loginRequest.Username)
+	//fmt.Println(loginRequest.Password)
 
 	// Init database
 
@@ -64,22 +64,42 @@ func LoginClientService(r *http.Request) map[string]string {
 	var clients []models.ClientPartner
 
 	fmt.Println("✅ Connected to PostgreSQL with connection pool")
-	result := postgresDB.Where("username = ? and password = ?", loginRequest.Username, loginRequest.Password).First(&clients)
+	result := postgresDB.Where("username = ? and password = ?", loginReportRequest.Username, loginReportRequest.Password).First(&clients)
 	if result.Error != nil {
 		fmt.Println("not found")
-		loginRes := map[string]string{
-			"code": "0",
+		var loginRes []map[string]string
+
+		m := map[string]string{
+			"code":       "0",
+			"partner_id": "0",
 		}
+		loginRes = append(loginRes, m)
 		return loginRes
 	}
-
-	loginRes := map[string]string{
-		"code": "1",
+	var loginRes []map[string]string
+	for _, client := range clients {
+		m := map[string]string{
+			//"id":                strconv.Itoa(client.ID),
+			//"keyword":           client.Keyword,
+			"code":       "1",
+			"partner_id": client.ID,
+			//"telcoid":           client.TelcoID,
+			//"ads_id":            client.AdsID,
+			//"client_partner_id": client.ClientPartnerID,
+			//"wap_aoc_refid":     client.WapAocRefID,
+			//"wap_aoc_id":        client.WapAocID,
+			//"wap_aoc_media":     client.WapAocMedia,
+			//"postback_url":      client.PostbackURL,
+			//"dn_url":            client.DNURL,
+			//"postback_counter":  strconv.Itoa(client.PostbackCounter),
+		}
+		loginRes = append(loginRes, m)
 	}
+
 	defer r.Body.Close()
 
 	redis_db.ConnectRedis(redisConnection, "", 0)
-	redis_key := loginRequest.Username + ":" + loginRequest.Session
+	redis_key := loginReportRequest.Username + ":" + loginReportRequest.Session
 
 	ttl := 1 * time.Hour // expires in 240 Hour
 
