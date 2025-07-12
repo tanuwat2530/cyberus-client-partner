@@ -13,6 +13,6 @@ func RequestHistoryController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := services.ListLogService(r)
+	response := services.RequestHistoryService(r)
 	utilities.ResponseWithJSON(w, http.StatusOK, response)
 }
