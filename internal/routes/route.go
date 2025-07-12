@@ -27,6 +27,7 @@ func SetupRoutes() {
 	http.HandleFunc("/client-api/login-report", controllers.LoginReportController)
 	http.HandleFunc("/client-report/chart", controllers.ClientReportChartController)
 	http.HandleFunc("/client-report/shortcode-client", controllers.ListShortcodeClientController)
+	http.HandleFunc("/client-report/request-history", controllers.RequestHistoryController)
 
 	http.HandleFunc("/api/", HomeHandler)
 }
