@@ -46,8 +46,8 @@ func RequestHistoryService(r *http.Request) []map[string]string {
 	redis_db.ConnectRedis(redisConnection, "", 0)
 
 	// Scan for keys
-	keys := redis_db.ScanKey(historyRequest.PrefixPathern+":"+historyRequest.PartnerId+":*", 1000000)
-
+	keys := redis_db.ScanKey(historyRequest.PrefixPathern+":"+historyRequest.PartnerId+"*", 1000)
+	fmt.Println(keys)
 	// Prepare result slice
 	var result []map[string]string
 
