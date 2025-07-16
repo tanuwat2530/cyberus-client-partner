@@ -23,12 +23,16 @@ func SetupRoutes() {
 	http.HandleFunc("/client-api/add", controllers.AddClientController)
 	http.HandleFunc("/client-api/update", controllers.UpdateClientController)
 
-	//REPORT
+	//CLIENT REPORT
 	http.HandleFunc("/client-api/login-report", controllers.LoginReportController)
 	http.HandleFunc("/client-report/chart", controllers.ClientReportChartController)
 	http.HandleFunc("/client-report/overall", controllers.ClientReportOverallController)
 	http.HandleFunc("/client-report/shortcode-client", controllers.ListShortcodeClientController)
 	http.HandleFunc("/client-report/request-history", controllers.RequestHistoryController)
+
+	//ADMIN REPORT
+	//http.HandleFunc("/admin-report/pie-report", controllers.AdminReportPieController)
+	http.HandleFunc("/admin-report/all-shortcode", controllers.ListShortcodeAllController)
 
 	http.HandleFunc("/api/", HomeHandler)
 }
