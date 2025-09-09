@@ -6,13 +6,13 @@ import (
 	"net/http"
 )
 
-func AdminReportMoController(w http.ResponseWriter, r *http.Request) {
+func AdminDnDetailController(w http.ResponseWriter, r *http.Request) {
 	// Check if the method is POST
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	response := services.AdminReportMoService(r)
+	response := services.AdminDnDetailService(r)
 	utilities.ResponseWithJSON(w, http.StatusOK, response)
 }

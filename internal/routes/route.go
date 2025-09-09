@@ -34,7 +34,9 @@ func SetupRoutes() {
 	//http.HandleFunc("/admin-report/pie-report", controllers.AdminReportPieController)
 	http.HandleFunc("/admin-report/all-shortcode", controllers.ListShortcodeAllController)
 	http.HandleFunc("/admin-report/all-mo", controllers.AdminReportMoController)
+	http.HandleFunc("/admin-report/all-dn", controllers.AdminReportDnController)
 	http.HandleFunc("/admin-report/detail-mo", controllers.AdminMoDetailController)
+	http.HandleFunc("/admin-report/detail-dn", controllers.AdminDnDetailController)
 
 	http.HandleFunc("/api/", HomeHandler)
 }

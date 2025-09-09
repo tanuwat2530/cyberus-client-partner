@@ -8,33 +8,29 @@ import (
 	"os"
 )
 
-type AdminMoDetailReques struct {
+type AdminDnDetailReques struct {
 	StartTime string `json:"start-time"`
 	EndTime   string `json:"end-time"`
 	Telco     string `json:"telco"`
 }
 
-type AdminMoDetailSummary struct {
+type AdminDnDetailSummary struct {
 	Id            string `json:"id"`
-	Action        string `json:"action"`
 	Code          string `json:"code"`
-	CyberusReturn string `json:"cyberus_return"`
 	Description   string `json:"description"`
-	Media         string `json:"media"`
 	Msisdn        string `json:"msisdn"`
 	Operator      string `json:"operator"`
-	RefId         string `json:"ref_id"`
 	Shortcode     string `json:"shortcode"`
 	Timestamp     string `json:"timestamp"`
-	Token         string `json:"token"`
 	TranRef       string `json:"tran_ref"`
+	CyberusReturn string `json:"cyberus_return"`
 }
 
-func AdminMoDetailService(r *http.Request) []AdminMoDetailSummary {
-	var output []AdminMoDetailSummary
+func AdminDnDetailService(r *http.Request) []AdminDnDetailSummary {
+	var output []AdminDnDetailSummary
 
-	var adminMoDetailReques AdminMoDetailReques
-	err := json.NewDecoder(r.Body).Decode(&adminMoDetailReques)
+	var adminDnDetailReques AdminDnDetailReques
+	err := json.NewDecoder(r.Body).Decode(&adminDnDetailReques)
 	if err != nil {
 		fmt.Println("admin_mo_detail_service : Invalid JSON #1:", err)
 		return nil
@@ -53,24 +49,24 @@ func AdminMoDetailService(r *http.Request) []AdminMoDetailSummary {
 	defer r.Body.Close()
 
 	// Base query with timestamp conditions
-	query := postgresDB.Table("").Where("timestamp >= ? AND timestamp <= ?", adminMoDetailReques.StartTime, adminMoDetailReques.EndTime)
+	query := postgresDB.Table("").Where("timestamp >= ? AND timestamp <= ?", adminDnDetailReques.StartTime, adminDnDetailReques.EndTime)
 
 	// Select the correct table based on telco
-	switch adminMoDetailReques.Telco {
+	switch adminDnDetailReques.Telco {
 	case "ais":
-		query = query.Table("ais_subscription_logs")
+		query = query.Table("ais_transaction_logs")
 	case "dtac":
-		query = query.Table("dtac_subscription_logs")
+		query = query.Table("dtac_transaction_logs")
 	case "tmvh":
-		query = query.Table("tmvh_subscription_logs")
+		query = query.Table("tmvh_transaction_logs")
 	default:
-		fmt.Println("Invalid telco specified:", adminMoDetailReques.Telco)
+		fmt.Println("Invalid telco specified:", adminDnDetailReques.Telco)
 		return nil
 	}
 
 	// Use Find to populate the output slice directly
 	if err := query.Find(&output).Error; err != nil {
-		fmt.Println("Failed to query data MO :", err)
+		fmt.Println("Failed to query data DN :", err)
 		return nil
 	}
 
