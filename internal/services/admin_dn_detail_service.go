@@ -20,7 +20,7 @@ type AdminDnDetailSummary struct {
 	Description   string `json:"description"`
 	Msisdn        string `json:"msisdn"`
 	Operator      string `json:"operator"`
-	Shortcode     string `json:"shortcode"`
+	Shortcode     string `json:"short_code"`
 	Timestamp     string `json:"timestamp"`
 	TranRef       string `json:"tran_ref"`
 	CyberusReturn string `json:"cyberus_return"`

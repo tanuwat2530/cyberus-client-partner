@@ -24,7 +24,7 @@ type AdminMoDetailSummary struct {
 	Msisdn        string `json:"msisdn"`
 	Operator      string `json:"operator"`
 	RefId         string `json:"ref_id"`
-	Shortcode     string `json:"shortcode"`
+	Shortcode     string `json:"short_code"`
 	Timestamp     string `json:"timestamp"`
 	Token         string `json:"token"`
 	TranRef       string `json:"tran_ref"`
