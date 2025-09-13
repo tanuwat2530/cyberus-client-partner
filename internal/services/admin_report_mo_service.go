@@ -50,18 +50,21 @@ func AdminReportMoService(r *http.Request) []AdminDataMoSummary {
 		postgresDB.Table("ais_subscription_logs").
 			Select("COUNT(id) AS total").
 			Where("timestamp >= ? AND timestamp <= ?", sc.StartSeconds, sc.EndSeconds).
+			Order("timestamp DESC"). // Add the Order method here
 			Scan(&aisMoResult)
 
 		// Query for DTAC
 		postgresDB.Table("dtac_subscription_logs").
 			Select("COUNT(id) AS total").
 			Where("timestamp >= ? AND timestamp <= ?", sc.StartSeconds, sc.EndSeconds).
+			Order("timestamp DESC"). // Add the Order method here
 			Scan(&dtacMoResult)
 
 		// Query for TMVH
 		postgresDB.Table("tmvh_subscription_logs").
 			Select("COUNT(id) AS total").
 			Where("timestamp >= ? AND timestamp <= ?", sc.StartSeconds, sc.EndSeconds).
+			Order("timestamp DESC"). // Add the Order method here
 			Scan(&tmvhMoResult)
 
 		// Append the results to the output slice
