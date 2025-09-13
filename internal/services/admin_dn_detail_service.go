@@ -64,6 +64,9 @@ func AdminDnDetailService(r *http.Request) []AdminDnDetailSummary {
 		return nil
 	}
 
+	// Add the Order method to sort by timestamp in descending order
+	query = query.Order("timestamp DESC")
+
 	// Use Find to populate the output slice directly
 	if err := query.Find(&output).Error; err != nil {
 		fmt.Println("Failed to query data DN :", err)
